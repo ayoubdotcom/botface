@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Generate Icons</title>
+    <style>
+        body { font-family: Arial; padding: 20px; }
+        canvas { border: 1px solid #ccc; margin: 10px; }
+        button { margin: 10px; padding: 10px; }
+    </style>
+</head>
+<body>
+    <h1>Generate PWA Icons</h1>
+    <p>Open this in browser, right-click each icon and "Save image as..."</p>
+    
+    <div id="icons"></div>
+    
+    <script>
+        const sizes = [72, 96, 128, 144, 152, 192, 384, 512];
+        const iconsContainer = document.getElementById('icons');
+        
+        sizes.forEach(size => {
+            const canvas = document.createElement('canvas');
+            canvas.width = size;
+            canvas.height = size;
+            canvas.style.display = 'block';
+            canvas.style.margin = '10px';
+            canvas.style.border = '1px solid #ccc';
+            
+            const ctx = canvas.getContext('2d');
+            
+            // Draw robot face
+            const center = size / 2;
+            const radius = size * 0.4;
+            
+            // Background
+            ctx.fillStyle = '#3c6382';
+            ctx.beginPath();
+            ctx.arc(center, center, radius, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // Eyes
+            const eyeRadius = size * 0.1;
+            const eyeSpacing = size * 0.2;
+            
+            // Left eye
+            ctx.fillStyle = '#111';
+            ctx.beginPath();
+            ctx.arc(center - eyeSpacing, center - eyeRadius, eyeRadius, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // Right eye
+            ctx.beginPath();
+            ctx.arc(center + eyeSpacing, center - eyeRadius, eyeRadius, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // Eye highlights
+            ctx.fillStyle = '#0abde3';
+            const highlightRadius = eyeRadius * 0.4;
+            ctx.beginPath();
+            ctx.arc(center - eyeSpacing, center - eyeRadius, highlightRadius, 0, Math.PI * 2);
+            ctx.fill();
+            
+            ctx.beginPath();
+            ctx.arc(center + eyeSpacing, center - eyeRadius, highlightRadius, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // Mouth
+            const mouthWidth = size * 0.4;
+            const mouthHeight = size * 0.08;
+            const mouthY = center + eyeRadius;
+            
+            ctx.fillStyle = '#ff3838';
+            ctx.beginPath();
+            ctx.ellipse(center, mouthY, mouthWidth/2, mouthHeight, 0, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // Add size label
+            const label = document.createElement('div');
+            label.textContent = `${size}x${size} - icon-${size}.png`;
+            label.style.marginBottom = '5px';
+            label.style.fontWeight = 'bold';
+            
+            iconsContainer.appendChild(label);
+            iconsContainer.appendChild(canvas);
+            
+            // Add download link
+            const link = document.createElement('a');
+            link.href = canvas.toDataURL('image/png');
+            link.download = `icon-${size}.png`;
+            link.textContent = `Download icon-${size}.png`;
+            link.style.display = 'block';
+            link.style.marginBottom = '20px';
+            iconsContainer.appendChild(link);
+        });
+    </script>
+</body>
+</html>

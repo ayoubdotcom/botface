@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Robo Companion - PWA</title>
+    <meta name="description" content="An interactive robot companion that talks and responds to questions">
+    <meta name="theme-color" content="#0c2461">
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json">
+    
+    <!-- Icons for PWA -->
+    <link rel="icon" href="icon-192.png" type="image/png">
+    <link rel="apple-touch-icon" href="icon-192.png">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+    
+    <!-- PWA detection -->
+    <script>
+        // Check if we're running as a PWA
+        if (window.matchMedia('(display-mode: standalone)').matches) {
+            document.documentElement.classList.add('pwa-standalone');
+        }
+        
+        // Detect if iOS and add special classes
+        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+        if (isIOS) {
+            document.documentElement.classList.add('ios-device');
+        }
+    </script>
+</head>
+<body>
+    <div class="app-container">
+        <div class="app-header">
+            <div class="header-left">
+                <h1 class="app-title">Robo Companion</h1>
+                <div class="pwa-badge" id="pwa-badge">
+                    <i class="fas fa-rocket"></i>
+                    <span>PWA</span>
+                </div>
+            </div>
+            <div class="header-right">
+                <button class="pwa-button" id="fullscreen-btn" title="Toggle Fullscreen">
+                    <i class="fas fa-expand"></i>
+                </button>
+                <button class="pwa-button" id="share-btn" title="Share App">
+                    <i class="fas fa-share-alt"></i>
+                </button>
+                <button class="install-button" id="install-button">
+                    <i class="fas fa-download"></i>
+                    <span>Install App</span>
+                </button>
+                <button class="pwa-button" id="install-help-btn" title="Installation Help">
+                    <i class="fas fa-question-circle"></i>
+                </button>
+            </div>
+        </div>
+        
+        <p class="subtitle">An interactive robot companion that works offline! Install as app, chat anytime.</p>
+        
+        <div class="robot-container">
+            <div class="antenna left"></div>
+            <div class="antenna right"></div>
+            <div class="robot-face" id="robot-face">
+                <!-- Eyebrows -->
+                <div class="eyebrow left-eyebrow"></div>
+                <div class="eyebrow right-eyebrow"></div>
+                
+                <!-- Eyes with eyelids -->
+                <div class="eyes-container">
+                    <div class="eye left-eye">
+                        <div class="eyelid left-eyelid"></div>
+                        <div class="pupil left-pupil" id="left-pupil"></div>
+                    </div>
+                    <div class="eye right-eye">
+                        <div class="eyelid right-eyelid"></div>
+                        <div class="pupil right-pupil" id="right-pupil"></div>
+                    </div>
+                </div>
+                
+                <!-- Mouth -->
+                <div class="mouth-container">
+                    <div class="mouth" id="mouth"></div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="status-panel">
+            <div class="expression-indicator">
+                <i class="fas fa-smile" id="expression-icon"></i>
+                <span id="expression-text">Feeling friendly and ready to chat!</span>
+            </div>
+            <div class="connection-status online" id="connection-status">
+                <i class="fas fa-wifi"></i>
+                <span id="connection-text">Online - App is ready to work offline</span>
+            </div>
+            <div class="storage-status" id="storage-status">
+                <i class="fas fa-database"></i>
+                <span>Storage: <span id="storage-value">Ready</span></span>
+            </div>
+        </div>
+        
+        <div class="chat-box">
+            <div class="chat-header">
+                <i class="fas fa-robot"></i>
+                <span>Robo Chat</span>
+            </div>
+            <div id="chat-log">
+                <div class="message robot-message">Hello! I'm Robo, your interactive PWA companion. I work offline too!</div>
+                <div class="message robot-message">Try asking me questions or install me as an app for fullscreen experience.</div>
+                <div class="message robot-message">To install: Click the "Install App" button or use your browser's install option.</div>
+            </div>
+            
+            <div class="input-container">
+                <input type="text" id="user-input" placeholder="Type your message here..." autocomplete="off">
+                <button id="send-btn">
+                    <i class="fas fa-paper-plane"></i>
+                    <span class="btn-text">Send</span>
+                </button>
+            </div>
+            
+            <div class="voice-controls">
+                <button class="voice-btn" id="speak-btn">
+                    <i class="fas fa-volume-up"></i>
+                    <span>Speak Response</span>
+                </button>
+                <button class="voice-btn" id="listen-btn">
+                    <i class="fas fa-microphone"></i>
+                    <span>Voice Input</span>
+                </button>
+                <button class="voice-btn" id="clear-btn" title="Clear Chat History">
+                    <i class="fas fa-trash"></i>
+                    <span>Clear</span>
+                </button>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>Robo Companion PWA • Works offline • Installable • 100% client-side</p>
+            <p class="pwa-info" id="pwa-info">Not installed as app yet. Click "Install App" button above.</p>
+        </div>
+    </div>
+    
+    <!-- Offline overlay -->
+    <div class="offline-overlay" id="offline-overlay">
+        <i class="fas fa-wifi-slash"></i>
+        <h2>You're Offline</h2>
+        <p>Don't worry! Robo Companion works offline too.</p>
+        <p>You can continue chatting with me without internet.</p>
+        <p style="margin-top: 20px; font-size: 0.9rem; opacity: 0.7;">Connection will be restored automatically when you're back online.</p>
+    </div>
+    
+    <!-- Install Instructions Modal -->
+    <div class="modal-overlay" id="install-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-download"></i> Install Robo Companion</h3>
+                <button class="close-modal" id="close-install-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="install-instruction">
+                    <div class="browser-icon chrome">
+                        <i class="fab fa-chrome"></i>
+                    </div>
+                    <div class="instruction-text">
+                        <h4>Chrome / Edge / Brave</h4>
+                        <p>Click the <i class="fas fa-download"></i> <strong>Install App</strong> button above, or look for the install icon <i class="fas fa-plus-circle"></i> in your address bar.</p>
+                    </div>
+                </div>
+                
+                <div class="install-instruction">
+                    <div class="browser-icon safari">
+                        <i class="fab fa-safari"></i>
+                    </div>
+                    <div class="instruction-text">
+                        <h4>Safari (iOS/iPadOS)</h4>
+                        <p>Tap the <i class="fas fa-share"></i> Share button, then scroll down and tap <strong>"Add to Home Screen"</strong>.</p>
+                    </div>
+                </div>
+                
+                <div class="install-instruction">
+                    <div class="browser-icon firefox">
+                        <i class="fab fa-firefox"></i>
+                    </div>
+                    <div class="instruction-text">
+                        <h4>Firefox</h4>
+                        <p>Tap the menu button (☰) and select <strong>"Install"</strong> or look for the install icon in your address bar.</p>
+                    </div>
+                </div>
+                
+                <div class="pwa-benefits">
+                    <h4><i class="fas fa-star"></i> Benefits of Installing</h4>
+                    <ul>
+                        <li><i class="fas fa-check-circle"></i> Works offline - no internet required</li>
+                        <li><i class="fas fa-check-circle"></i> Launch from home screen like a native app</li>
+                        <li><i class="fas fa-check-circle"></i> Fullscreen immersive experience</li>
+                        <li><i class="fas fa-check-circle"></i> Faster loading - no need to type URL</li>
+                        <li><i class="fas fa-check-circle"></i> Receive updates automatically</li>
+                    </ul>
+                </div>
+                
+                <div class="install-status" id="install-status">
+                    <p><i class="fas fa-info-circle"></i> This app meets PWA requirements and is installable.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Notification -->
+    <div class="notification" id="notification">
+        <i class="fas fa-info-circle"></i>
+        <span id="notification-text">Notification message</span>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="app.js"></script>
+    <script src="pwa.js"></script>
+</body>
+</html>
