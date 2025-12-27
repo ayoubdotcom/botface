@@ -13,8 +13,6 @@ const expressionIcon = document.getElementById('expression-icon');
 const speakBtn = document.getElementById('speak-btn');
 const listenBtn = document.getElementById('listen-btn');
 const clearBtn = document.getElementById('clear-btn');
-const connectionStatus = document.getElementById('connection-status');
-const connectionText = document.getElementById('connection-text');
 const storageValue = document.getElementById('storage-value');
 const pwaInfo = document.getElementById('pwa-info');
 
