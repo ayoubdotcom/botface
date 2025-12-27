@@ -45,63 +45,8 @@ function initPWA() {
 function registerServiceWorker() {
     if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
-            // Create a simple service worker inline (in a real app, this would be a separate file)
-            const swContent = `
-                const CACHE_NAME = 'robo-companion-v2';
-                const urlsToCache = [
-                    '/',
-                    'index.html',
-                    'styles.css',
-                    'app.js',
-                    'pwa.js',
-                    'manifest.json',
-                    'icon-192.png'
-                ];
-                
-                self.addEventListener('install', event => {
-                    event.waitUntil(
-                        caches.open(CACHE_NAME)
-                            .then(cache => {
-                                console.log('Opened cache');
-                                return cache.addAll(urlsToCache);
-                            })
-                    );
-                });
-                
-                self.addEventListener('fetch', event => {
-                    event.respondWith(
-                        caches.match(event.request)
-                            .then(response => {
-                                if (response) {
-                                    return response;
-                                }
-                                return fetch(event.request);
-                            })
-                    );
-                });
-                
-                self.addEventListener('activate', event => {
-                    const cacheWhitelist = [CACHE_NAME];
-                    event.waitUntil(
-                        caches.keys().then(cacheNames => {
-                            return Promise.all(
-                                cacheNames.map(cacheName => {
-                                    if (cacheWhitelist.indexOf(cacheName) === -1) {
-                                        return caches.delete(cacheName);
-                                    }
-                                })
-                            );
-                        })
-                    );
-                });
-            `;
-            
-            // Create a blob URL for the service worker
-            const blob = new Blob([swContent], { type: 'application/javascript' });
-            const swURL = URL.createObjectURL(blob);
-            
-            // Register the service worker
-            navigator.serviceWorker.register(swURL)
+            // Register the service worker from a dedicated file (avoids blob URL protocol issues)
+            navigator.serviceWorker.register('sw.js')
                 .then(registration => {
                     console.log('Service Worker registered with scope:', registration.scope);
                     showNotification('App is ready to work offline!');
