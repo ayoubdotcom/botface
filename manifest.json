@@ -2,12 +2,12 @@
   "name": "Robo Companion",
   "short_name": "Robo",
   "description": "An interactive robot companion that talks and responds to questions",
-  "start_url": "/",
+  "start_url": "./",
   "display": "standalone",
   "background_color": "#0c2461",
   "theme_color": "#0c2461",
   "orientation": "portrait-primary",
-  "scope": "/",
+  "scope": "/botface/",
   "lang": "en",
   "icons": [
     {
